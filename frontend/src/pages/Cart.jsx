@@ -21,7 +21,7 @@ const Cart = () => {
 
   useEffect(() => {
     const getPlantsFromCart = async () => {
-      await axios.get('http://localhost:3000/api/cart', { headers: { Authorization: `Bearer ${user.token}` } })
+      await axios.get('/api/cart', { headers: { Authorization: `Bearer ${user.token}` } })
         .then((response) => {
           dispatch({ type: 'GET_FROM_CART', payload: response.data })
           setGetLoading(false)

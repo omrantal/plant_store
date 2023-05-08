@@ -23,7 +23,7 @@ const CartCard = ({ plant }) => {
   const deletePlantFromCart = async ({ id, price }) => {
     setLoading(true)
 
-    await axios.delete(`http://localhost:3000/api/cart/${id}`, { headers: { Authorization: `Bearer ${user.token}` } })
+    await axios.delete(`/api/cart/${id}`, { headers: { Authorization: `Bearer ${user.token}` } })
       .then((response) => {
         dispatch({ type: 'DELETE_FROM_CART', payload: { id, price } })
       }).catch((error) => {

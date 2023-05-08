@@ -24,7 +24,7 @@ const Plant = () => {
 
   useEffect(() => {
     const getSinglePlant = async () => {
-      await axios.get(`http://localhost:3000/api/store/${id}`)
+      await axios.get(`/api/store/${id}`)
         .then((response) => {
           setChoosenPlant(response.data)
           setLoading(false)

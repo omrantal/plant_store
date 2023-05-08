@@ -38,7 +38,7 @@ const Admin = () => {
   const [modalType, setModalType] = useState('')
 
   const getPlantsFromStore = async () => {
-    await axios.get('http://localhost:3000/api/store')
+    await axios.get('/api/store')
       .then((response) => {
         dispatch({ type: 'GET_FROM_STORE', payload: response.data })
       }).catch((error) => {
@@ -49,7 +49,7 @@ const Admin = () => {
   }
 
   const getUsers = async (token) => {
-    await axios.get('http://localhost:3000/api/user', { headers: { Authorization: `Bearer ${token}` } })
+    await axios.get('/api/user', { headers: { Authorization: `Bearer ${token}` } })
       .then((response) => {
         dispatchUsers({ type: 'GET_USERS', payload: response.data })
       }).catch((error) => {
@@ -106,7 +106,7 @@ const Admin = () => {
     setPlantsLoading(true)
 
     const newPlant = { image, name, price, type, title, desc, watering, light, about }
-    await axios.post('http://localhost:3000/api/store', newPlant, { headers: { Authorization: `Bearer ${user.token}` } })
+    await axios.post('/api/store', newPlant, { headers: { Authorization: `Bearer ${user.token}` } })
       .then((response) => {
         dispatch({ type: 'ADD_TO_STORE', payload: response.data })
         import ('../components/Toast').then((module) => {
@@ -142,7 +142,7 @@ const Admin = () => {
     setPlantsLoading(true)
 
     const updatedPlant = { image, name, price, type, title, desc, watering, light, about }
-    await await axios.put(`http://localhost:3000/api/store/${id}`, updatedPlant, { headers: { Authorization: `Bearer ${user.token}` } })
+    await await axios.put(`/api/store/${id}`, updatedPlant, { headers: { Authorization: `Bearer ${user.token}` } })
       .then((response) => {
         dispatch({ type: 'UPDATE_IN_STORE', payload: { _id: id, ...updatedPlant } })
         import ('../components/Toast').then((module) => {
@@ -161,7 +161,7 @@ const Admin = () => {
   const removePlant = async (_id) => {
     setPlantsLoading(true)
 
-    await axios.delete(`http://localhost:3000/api/store/${_id}`, { headers: { Authorization: `Bearer ${user.token}` } })
+    await axios.delete(`/api/store/${_id}`, { headers: { Authorization: `Bearer ${user.token}` } })
       .then((response) => {
         dispatch({ type: 'DELETE_FROM_STORE', payload: { _id } })
         import ('../components/Toast').then((module) => {
@@ -179,7 +179,7 @@ const Admin = () => {
   const removeUser = async (_id) => {
     setUsersLoading(true)
 
-    await axios.delete(`http://localhost:3000/api/user/${_id}`, { headers: { Authorization: `Bearer ${user.token}` } })
+    await axios.delete(`/api/user/${_id}`, { headers: { Authorization: `Bearer ${user.token}` } })
       .then((response) => {
         dispatchUsers({ type: 'DELETE_USER', payload: { _id } })
         import ('../components/Toast').then((module) => {

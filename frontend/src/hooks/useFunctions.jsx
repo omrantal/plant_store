@@ -26,7 +26,7 @@ export const useFunctions = () => {
       } else {
         const { name, image, type, price } = plant
         const newPlant = { name, image, type, price, numOfPieces: 1, priceForPiece: price }
-        await axios.post('http://localhost:3000/api/cart', newPlant, { headers: { Authorization: `Bearer ${user.token}` } })
+        await axios.post('/api/cart', newPlant, { headers: { Authorization: `Bearer ${user.token}` } })
           .then((response) => {
             dispatch({ type: 'ADD_TO_CART', payload: response.data })
           }).catch((error) => {
@@ -55,7 +55,7 @@ export const useFunctions = () => {
         newPrice = price - priceForPiece
       }
 
-      await axios.put(`http://localhost:3000/api/cart/${id}`, { numOfPieces: newNumOfPieces, price: newPrice }, { headers: { Authorization: `Bearer ${user.token}` } })
+      await axios.put(`/api/cart/${id}`, { numOfPieces: newNumOfPieces, price: newPrice }, { headers: { Authorization: `Bearer ${user.token}` } })
         .then((response) => {
           dispatch({ type: 'UPDATE_IN_CART', payload: { id, numOfPieces: newNumOfPieces, price: newPrice, change } })
         }).catch((error) => {

@@ -2,6 +2,7 @@ require('dotenv').config()
 const colors = require('colors')
 const express = require('express')
 const cors = require('cors')
+const path = require('path');
 const port = process.env.PORT || 5000
 const connectDB = require('./config/db')
 
@@ -25,6 +26,17 @@ app.use((req, res, next) => {
 app.use('/api/cart', cartRoutes)
 app.use('/api/store', storeRoutes)
 app.use('/api/user', userRoutes)
+
+// serving the frontend
+app.use(express.static(path.join(__dirname, "./frontend/dist")));
+app.get("*", function (_, res) {
+  res.sendFile(
+    path.join(__dirname, "./frontend/dist/index.html"),
+    function (err) {
+      res.status(500).send(err);
+    }
+  );
+});
 
 // connect to db
 connectDB().then(() => {
