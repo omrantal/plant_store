@@ -4,7 +4,7 @@
   "description": "Plant Store",
   "main": "server.js",
   "scripts": {
-    "build": "cd frontend && npm install && npm run build",
+    "build": "npm install && cd frontend && npm install && npm run build",
     "start": "node server.js",
     "server": "nodemon server.js",
     "client": "npm start --prefix client",
