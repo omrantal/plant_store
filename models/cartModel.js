@@ -3,6 +3,11 @@ const Schema = mongoose.Schema
 
 const cartSchema = new Schema(
   {
+    _id: {
+      type: String,
+      required: true,
+      unique: true
+    },
     name: {
       type: String,
       required: true

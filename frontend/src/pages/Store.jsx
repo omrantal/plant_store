@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 
 import axios from 'axios';
@@ -17,7 +17,7 @@ const Store = () => {
   const { plants, dispatch } = usePlantsContext()
 
   const [activeTab, setActiveTab] = useState(1)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(true)
 
   const [indoorPlants, setIndoorPlants] = useState([])
@@ -25,7 +25,7 @@ const Store = () => {
 
   useEffect(() => {
     const getPlantsFromStore = async () => {
-      await axios.get('/api/store')
+      await axios.get('http://localhost:3000/api/store')
         .then((response) => {
           dispatch({ type: 'GET_FROM_STORE', payload: response.data })
           setLoading(false)
@@ -54,23 +54,11 @@ const Store = () => {
     setOutdoorPlants(outdoor)
   }, [plants])
 
-  const filteringPlants = (plantsInFilter) => {
-    const termLength = searchTerm.length
-    const newSearchTerm = searchTerm.toLowerCase()
-    const filteredPlants = plantsInFilter.filter((plant) => {
-      const newName = (plant.name.toLowerCase()).substr(0, termLength)
-      if (newSearchTerm == "") {
-        return plant
-      } else if (newName == newSearchTerm) {
-        return plant
-      }
+  const filteredPlants = useMemo(() => {
+    return (activeTab === 1 ? indoorPlants : outdoorPlants).filter(plant => {
+      return plant.name.toLowerCase().includes(query.toLowerCase())
     })
-    return filteredPlants
-  }
-
-  const filteredIndoorPlants = filteringPlants(indoorPlants)
-  const filteredOutdoorPlants = filteringPlants(outdoorPlants)
-  const currentPlants = activeTab === 1 ? filteredIndoorPlants : filteredOutdoorPlants
+  }, [plants, activeTab, query])
 
   return (
     <section className={`${styles.padding}`}>
@@ -91,16 +79,16 @@ const Store = () => {
           <label htmlFor="search" className="rounded-full rounded-r-none py-2 px-4 border-solid border-gray-400 border-[1px] border-r-0">
             <AiOutlineSearch className="w-6 h-6 text-gray-800 shrink-0" />
           </label>
-          <input id="search" type="text" className="rounded-full rounded-l-none py-2 px-4 border-solid border-gray-400 border-[1px] focus:outline-none" placeholder="Search ..." onChange={(e) => setSearchTerm(e.target.value)} />
+          <input id="search" type="search" value={query} className="rounded-full rounded-l-none py-2 px-4 border-solid border-gray-400 border-[1px] focus:outline-none" placeholder="Search ..." onChange={(e) => setQuery(e.target.value)} />
         </div>
       </div>
 
       {loading ? (
         <Spinner height="300px" />
       ) : (
-        currentPlants.length > 0 ?
+        filteredPlants.length > 0 ?
           <div className="grid grid-cols-1 xxs:grid-cols-2 ss:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 place-items-center content-center group">
-            {currentPlants.map((plant) => (
+            {filteredPlants.map((plant) => (
               <Suspense key={plant._id} fallback={<Spinner height="300px" />}>
                 <PlantCard plant={plant} group={true} />
               </Suspense>

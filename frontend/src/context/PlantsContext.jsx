@@ -1,4 +1,4 @@
-import { createContext, useReducer, useEffect } from 'react';
+import { createContext, useReducer, useEffect, memo } from 'react';
 
 import axios from 'axios';
 
@@ -68,20 +68,21 @@ export const plantsReducer = (state, action) => {
       }
     // action.payload = plant object
     case 'ADD_TO_CART':
+      localStorage.setItem('plantAdded', JSON.stringify(state.isPlantAdded + 1))
       return {
         ...state,
-        isPlantAdded: true,
+        isPlantAdded: state.isPlantAdded + 1,
         plantsInCart: [...state.plantsInCart, action.payload],
         totalPrice: state.totalPrice + action.payload.price
       }
-    // action.payload = plant id
+    // action.payload = plant id and change
     case 'UPDATE_IN_CART':
-      const { id, numOfPieces, price, change } = action.payload
+      const { _id, change } = action.payload
       newTotalPrice = state.totalPrice
       newPlants = state.plantsInCart.map((plant) => {
-        if (plant._id === id) {
+        if (plant._id === _id) {
           newTotalPrice = change === 'add' ? (newTotalPrice + plant.priceForPiece) : (newTotalPrice - plant.priceForPiece)
-          return {...plant, numOfPieces, price}
+          return action.payload
         }
         return plant
       })
@@ -100,12 +101,12 @@ export const plantsReducer = (state, action) => {
     case 'OPEN_CART':
       return {
         ...state,
-        isPlantAdded: false
+        isPlantAdded: 0
       }
     case 'EMPTY_CART':
       return {
         ...state,
-        isPlantAdded: false,
+        isPlantAdded: 0,
         plantsInCart: [],
         totalPrice: 0
       }
@@ -114,27 +115,25 @@ export const plantsReducer = (state, action) => {
   }
 }
 
-export const PlantsContextProvider = ({ children }) => {
+export const PlantsContextProvider = memo(({ children }) => {
   const { user } = useAuthContext()
   //const location = useLocation()
   const [state, dispatch] = useReducer(plantsReducer, {
     plants: [],
     plantsInCart: [],
     totalPrice: 0,
-    isPlantAdded: false
+    isPlantAdded: JSON.parse(localStorage.getItem('plantAdded')) || 0
   })
 
   useEffect(() => {
     const getPlantsFromCart = async () => {
-      await axios.get('/api/cart', { headers: { Authorization: `Bearer ${user.token}` } })
+      await axios.get('http://localhost:3000/api/cart', { headers: { Authorization: `Bearer ${user.token}` } })
         .then((response) => {
           dispatch({ type: 'GET_FROM_CART', payload: response.data })
         }).catch((error) => {
           console.log(error)
         })
     }
-
-    //const user = JSON.parse(localStorage.getItem('user'))
 
     if (user) {
       getPlantsFromCart()
@@ -146,4 +145,4 @@ export const PlantsContextProvider = ({ children }) => {
       { children }
     </PlantsContext.Provider>
   )
-}
+})

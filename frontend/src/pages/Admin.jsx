@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineUser, AiOutlineSearch } from 'react-icons/ai';
 import { BiTrash, BiEdit, BiAddToQueue } from 'react-icons/bi';
 
-import axios from 'axios';
 import styles from '../style';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,19 +11,18 @@ import { ToastContainer } from 'react-toastify';
 
 import { useAuthContext } from '../hooks/useAuthContext';
 import { usePlantsContext } from '../hooks/usePlantsContext';
+import { useAdminFunctions } from '../hooks/useAdminFunctions';
 
 const Admin = () => {
-  const { user, users, dispatch: dispatchUsers } = useAuthContext()
-  const { plants, dispatch } = usePlantsContext()
+  const { user, users } = useAuthContext()
+  const { plants } = usePlantsContext()
+  const { plantsLoading, usersLoading, modal, setModal, getPlantsFromStore, getUsers, addPlant, editPlant, removePlant, removeUser } = useAdminFunctions()
   const navigate = useNavigate()
 
   const [activeTab, setActiveTab] = useState(1)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [query, setQuery] = useState('')
   const [checkLoading, setCheckLoading] = useState(true)
-  const [plantsLoading, setPlantsLoading] = useState(true)
-  const [usersLoading, setUsersLoading] = useState(true)
 
-  const [modal, setModal] = useState(false)
   const [id, setId] = useState('')
   const [image, setImage] = useState('')
   const [name, setName] = useState('')
@@ -36,28 +34,6 @@ const Admin = () => {
   const [light, setLight] = useState('')
   const [about, setAbout] = useState('')
   const [modalType, setModalType] = useState('')
-
-  const getPlantsFromStore = async () => {
-    await axios.get('/api/store')
-      .then((response) => {
-        dispatch({ type: 'GET_FROM_STORE', payload: response.data })
-      }).catch((error) => {
-        console.log(error)
-      })
-
-    setPlantsLoading(false)
-  }
-
-  const getUsers = async (token) => {
-    await axios.get('/api/user', { headers: { Authorization: `Bearer ${token}` } })
-      .then((response) => {
-        dispatchUsers({ type: 'GET_USERS', payload: response.data })
-      }).catch((error) => {
-        console.log(error)
-      })
-
-    setUsersLoading(false)
-  }
 
   useEffect(() => {
     const checkUser = async () => {
@@ -72,7 +48,7 @@ const Admin = () => {
     }
 
     checkUser()
-  }, [dispatch, dispatchUsers])
+  }, [user])
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -88,6 +64,12 @@ const Admin = () => {
     }
   }, [])
 
+  const filteredItems = useMemo(() => {
+    return (activeTab === 1 ? plants : users).filter(item => {
+      return (activeTab === 1 ? item.name : item.username).toLowerCase().includes(query.toLowerCase())
+    })
+  }, [plants, users, activeTab, query])
+
   const setEmpty = () => {
     setId('')
     setName('')
@@ -99,27 +81,6 @@ const Admin = () => {
     setWatering('')
     setLight('')
     setAbout('')
-  }
-
-  const addPlant = async () => {
-    setModal(false)
-    setPlantsLoading(true)
-
-    const newPlant = { image, name, price, type, title, desc, watering, light, about }
-    await axios.post('/api/store', newPlant, { headers: { Authorization: `Bearer ${user.token}` } })
-      .then((response) => {
-        dispatch({ type: 'ADD_TO_STORE', payload: response.data })
-        import ('../components/Toast').then((module) => {
-          module.notifySuccess("Plant got added successfully")
-        })
-      }).catch((error) => {
-        import ('../components/Toast').then((module) => {
-          module.notifyError(error.response.data.error)
-        })
-      })
-
-    setPlantsLoading(false)
-    setEmpty()
   }
 
   const choosePlant = (plant) => {
@@ -137,82 +98,10 @@ const Admin = () => {
     setModal(true)
   }
 
-  const editPlant = async () => {
-    setModal(false)
-    setPlantsLoading(true)
-
-    const updatedPlant = { image, name, price, type, title, desc, watering, light, about }
-    await await axios.put(`/api/store/${id}`, updatedPlant, { headers: { Authorization: `Bearer ${user.token}` } })
-      .then((response) => {
-        dispatch({ type: 'UPDATE_IN_STORE', payload: { _id: id, ...updatedPlant } })
-        import ('../components/Toast').then((module) => {
-          module.notifySuccess("Plant got updated successfully")
-        })
-      }).catch((error) => {
-        import ('../components/Toast').then((module) => {
-          module.notifyError(error.response.data.error)
-        })
-      })
-
-    setPlantsLoading(false)
-    setEmpty()
-  }
-
-  const removePlant = async (_id) => {
-    setPlantsLoading(true)
-
-    await axios.delete(`/api/store/${_id}`, { headers: { Authorization: `Bearer ${user.token}` } })
-      .then((response) => {
-        dispatch({ type: 'DELETE_FROM_STORE', payload: { _id } })
-        import ('../components/Toast').then((module) => {
-          module.notifySuccess("Plant got removed successfully")
-        })
-      }).catch((error) => {
-        import ('../components/Toast').then((module) => {
-          module.notifyError(error.response.data.error)
-        })
-      })
-
-    setPlantsLoading(false)
-  }
-
-  const removeUser = async (_id) => {
-    setUsersLoading(true)
-
-    await axios.delete(`/api/user/${_id}`, { headers: { Authorization: `Bearer ${user.token}` } })
-      .then((response) => {
-        dispatchUsers({ type: 'DELETE_USER', payload: { _id } })
-        import ('../components/Toast').then((module) => {
-          module.notifySuccess("User got removed successfully")
-        })
-      }).catch((error) => {
-        import ('../components/Toast').then((module) => {
-          module.notifyError(error.response.data.error)
-        })
-      })
-
-    setUsersLoading(false)
-  }
-
   if (checkLoading) {
     return (
       <Spinner height="300px" />
     )
-  }
-
-  const filteringData = (data) => {
-    const termLength = searchTerm.length
-    const newSearchTerm = searchTerm.toLowerCase()
-    const filteredData = data.filter((d) => {
-      const usedName = d.name ? d.name : d.username
-      const newName = (usedName.toLowerCase()).substr(0, termLength)
-      if (newSearchTerm == "") {
-        return d
-      } else if (newName == newSearchTerm) {
-        return d
-      }
-    })
-    return filteredData
   }
 
   return (
@@ -232,7 +121,7 @@ const Admin = () => {
           <label htmlFor="search" className="rounded-full rounded-r-none py-2 px-4 border-solid border-gray-400 border-[1px] border-r-0">
             <AiOutlineSearch className="w-6 h-6 text-gray-800 shrink-0" />
           </label>
-          <input id="search" type="text" className="rounded-full rounded-l-none py-2 px-4 border-solid border-gray-400 border-[1px] focus:outline-none" placeholder="Search ..." onChange={(e) => setSearchTerm(e.target.value)} />
+          <input id="search" type="search" className="rounded-full rounded-l-none py-2 px-4 border-solid border-gray-400 border-[1px] focus:outline-none" placeholder="Search ..." onChange={(e) => setQuery(e.target.value)} />
         </div>
       </div>
 
@@ -287,11 +176,23 @@ const Admin = () => {
 
               <div className={`flex justify-between mt-6 w-full ${styles.paragraph2}`}>
                 {modalType === 'Add' ?
-                  <button className="mx-1 py-2 px-4 text-white cursor-pointer hover:bg-[#99B896] hover:scale-110 duration-300" disabled={(name && title) === '' ? true : false} onClick={addPlant}>
+                  <button className="mx-1 py-2 px-4 text-white cursor-pointer hover:bg-[#99B896] hover:scale-110 duration-300"
+                    disabled={(name && title) === '' ? true : false}
+                    onClick={() => {
+                      addPlant({ image, name, price, type, title, desc, watering, light, about })
+                      setEmpty()
+                    }}
+                  >
                     Add
                   </button>
                   :
-                  <button className="mx-1 py-2 px-4 text-white cursor-pointer hover:bg-[#99B896] hover:scale-110 duration-300" disabled={(name && title) === '' ? true : false} onClick={editPlant}>
+                  <button className="mx-1 py-2 px-4 text-white cursor-pointer hover:bg-[#99B896] hover:scale-110 duration-300" 
+                    disabled={(name && title) === '' ? true : false}
+                    onClick={() => {
+                      editPlant({ id, image, name, price, type, title, desc, watering, light, about })
+                      setEmpty()
+                    }}
+                  >
                     Edit
                   </button>
                 }
@@ -307,10 +208,11 @@ const Admin = () => {
             {plantsLoading ? (
               <Spinner height="300px" />
             ) : (
-              plants && filteringData(plants).length > 0 ? (
+              filteredItems.length > 0 ? (
                 <>
                   <div className="flex justify-center items-center w-fit mx-auto my-3 sm:my-6 px-6 py-3 text-center text-white cursor-pointer bg-[#669660] hover:bg-[#99B896] hover:scale-110 duration-500"
                     onClick={() => {
+                      setEmpty()
                       setModalType('Add')
                       setModal(true)
                     }}
@@ -318,7 +220,7 @@ const Admin = () => {
                     <BiAddToQueue className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8" />
                     <p className={`${styles.paragraph1} ml-2`}>Add Plant</p>
                   </div>
-                  {filteringData(plants).map((plant) => (
+                  {filteredItems.map((plant) => (
                     <li className="flex flex-col items-center justify-center mx-auto w-[80%] border-gray-300 border-solid border-[1px] p-4 mb-2" key={plant._id}>
                       <div className="flex justify-start items-start w-full">
                         <img src={plant.image} alt="plant" className="h-[120px] w-[120px]" />
@@ -345,7 +247,7 @@ const Admin = () => {
                 </>
               ) : (
                 <div className="flex justify-center items-center w-full h-[343px]">
-                  <h1>Nothing to Show</h1>
+                  <h1 className={styles.heading}>Nothing to Show</h1>
                 </div>
               )
             )}
@@ -356,8 +258,8 @@ const Admin = () => {
           {usersLoading ? (
             <Spinner />
           ) : (
-            users && filteringData(users).length > 0 ? (
-              filteringData(users).map((u) => (
+            filteredItems.length > 0 ? (
+              filteredItems.map((u) => (
                 <li className="flex flex-col items-center justify-center mx-auto w-[80%] border-gray-300 border-solid border-[1px] p-4 mb-2" key={u._id}>
                   <div className="flex justify-start items-start w-full">
                     <AiOutlineUser className="h-[100px] w-[100px]" />
@@ -375,7 +277,7 @@ const Admin = () => {
               ))
             ) : (
               <div className="flex justify-center items-center w-full h-[343px]">
-                <h1>Nothing to Show</h1>
+                <h1 className={styles.heading}>Nothing to Show</h1>
               </div>
             )
           )}

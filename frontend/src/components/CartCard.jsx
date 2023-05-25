@@ -7,23 +7,23 @@ import styles from '../style';
 
 import { TailSpinner } from '../components/Spinner';
 
-import { useFunctions } from '../hooks/useFunctions';
+import { useCartFunctions } from '../hooks/useCartFunctions';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { usePlantsContext } from '../hooks/usePlantsContext';
 
 const CartCard = ({ plant }) => {
   const { dispatch } = usePlantsContext()
   const { user } = useAuthContext()
-  const { updateLoading, updatePlantInCart } = useFunctions()
+  const { updateLoading, updatePlantInCart } = useCartFunctions()
 
   const [loading, setLoading] = useState(false)
 
-  const { _id, numOfPieces, price, priceForPiece } = plant
+  const { _id, numOfPieces, price } = plant
 
   const deletePlantFromCart = async ({ id, price }) => {
     setLoading(true)
 
-    await axios.delete(`/api/cart/${id}`, { headers: { Authorization: `Bearer ${user.token}` } })
+    await axios.delete(`http://localhost:3000/api/cart/${id}`, { headers: { Authorization: `Bearer ${user.token}` } })
       .then((response) => {
         dispatch({ type: 'DELETE_FROM_CART', payload: { id, price } })
       }).catch((error) => {
@@ -55,11 +55,11 @@ const CartCard = ({ plant }) => {
       </div>
       <div className="flex flex-col items-center justify-center mr-2">
         <button disabled={updateLoading} className="hover:rounded-full hover:bg-gray-300 duration-300 p-0.5 mb-3">
-          {updateLoading ? <TailSpinner width="20px" /> : <AiOutlineUpCircle className="h-[20px] w-[20px] shrink-0 cursor-pointer" onClick={() => updatePlantInCart({ id: _id, numOfPieces, price, priceForPiece, change: 'add' })} />}
+          {updateLoading ? <TailSpinner width="20px" /> : <AiOutlineUpCircle className="h-[20px] w-[20px] shrink-0 cursor-pointer" onClick={() => updatePlantInCart({ id: _id, change: 'add' })} />}
         </button>
         <p className={`${styles.paragraph3}`}>{plant.numOfPieces}</p>
-        <button disabled={updateLoading} className="hover:rounded-full hover:bg-gray-300 duration-300 p-0.5 mt-3">
-          {updateLoading ? <TailSpinner width="20px" /> : <AiOutlineDownCircle className="h-[20px] w-[20px] shrink-0 cursor-pointer" onClick={() => updatePlantInCart({ id: _id, numOfPieces, price, priceForPiece, change: 'remove' })} />}
+        <button disabled={updateLoading || numOfPieces === 1} className="hover:rounded-full hover:bg-gray-300 duration-300 p-0.5 mt-3">
+          {updateLoading ? <TailSpinner width="20px" /> : <AiOutlineDownCircle className="h-[20px] w-[20px] shrink-0 cursor-pointer" onClick={() => updatePlantInCart({ id: _id, change: 'remove' })} />}
         </button>
       </div>
     </div>

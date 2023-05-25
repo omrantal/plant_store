@@ -10,11 +10,11 @@ import { AccordionItem } from '../components/AccordionItem';
 import { Spinner, TailSpinner } from '../components/Spinner';
 
 import { useAuthContext } from '../hooks/useAuthContext';
-import { useFunctions } from '../hooks/useFunctions';
+import { useCartFunctions } from '../hooks/useCartFunctions';
 
 const Plant = () => {
   const { user } = useAuthContext()
-  const { addLoading, addPlantToCart } = useFunctions()
+  const { addLoading, addPlantToCart } = useCartFunctions()
   const [loading, setLoading] = useState(true)
   const [toggleLikes, setToggleLikes] = useState(false)
   const [toggleAbout, setToggleAbout] = useState(false)
@@ -24,7 +24,7 @@ const Plant = () => {
 
   useEffect(() => {
     const getSinglePlant = async () => {
-      await axios.get(`/api/store/${id}`)
+      await axios.get(`http://localhost:3000/api/store/${id}`)
         .then((response) => {
           setChoosenPlant(response.data)
           setLoading(false)
@@ -67,7 +67,7 @@ const Plant = () => {
               <p className={`${styles.paragraph3} font-light`}>{desc}</p>
             </h3>
             <button disabled={addLoading || !user} className={`flex my-3 md:my-6 w-full h-fit px-6 py-3 justify-center text-white ${user ? (addLoading ? 'cursor-wait' : 'cursor-pointer') : 'cursor-default'} bg-[#669660] ${user && 'hover:bg-[#99B896] hover:scale-110 duration-300'} ${styles.paragraph2}`} onClick={() => addPlantToCart(choosenPlant)}>
-              {addLoading && <div className="mr-2"><TailSpinner width="20px" color="white" /></div>}
+              {addLoading && <div className="flex mr-2 justify-center items-center"><TailSpinner width="18px" color="white" /></div>}
               {user ? (addLoading ? 'Adding...' : 'Add to Cart') : ('login to use cart')}
             </button>
             <div className="p-2">

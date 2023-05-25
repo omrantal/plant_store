@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 
 import axios from 'axios';
 import styles from '../style';
 
-import { CartCard } from '../components/CartCard';
 import { Button } from '../components/Button';
 import { Spinner } from '../components/Spinner';
+const Checkout = lazy(() => import('../sections/Checkout').then((module) => {
+  return { default: module.Checkout }
+}))
+const CartCard = lazy(() => import('../components/CartCard').then((module) => {
+  return { default: module.CartCard }
+}))
 
 import { useAuthContext } from '../hooks/useAuthContext';
 import { usePlantsContext } from '../hooks/usePlantsContext';
@@ -21,12 +26,12 @@ const Cart = () => {
 
   useEffect(() => {
     const getPlantsFromCart = async () => {
-      await axios.get('/api/cart', { headers: { Authorization: `Bearer ${user.token}` } })
+      await axios.get('http://localhost:3000/api/cart', { headers: { Authorization: `Bearer ${user.token}` } })
         .then((response) => {
           dispatch({ type: 'GET_FROM_CART', payload: response.data })
           setGetLoading(false)
         }).catch((error) => {
-          console.error(error)
+          console.log(error)
         })
     }
 
@@ -66,7 +71,9 @@ const Cart = () => {
             <div className="flex flex-col sm:flex-row">
               <div className="flex-[80%] grid grid-cols-1 ss:grid-cols-2 lg:grid-cols-3 place-items-center content-center order-2 sm:order-1 mt-0 sm:mt-10">
                 {plantsInCart.map((plant) => (
-                  <CartCard key={plant._id} plant={plant} />
+                  <Suspense key={plant._id} fallback={<Spinner height="200px" />}>
+                    <CartCard plant={plant} />
+                  </Suspense>
                 ))}
               </div>
               <div className="flex-[20%] flex flex-col justify-center items-center order-1 sm:order-2 p-6">
@@ -74,6 +81,9 @@ const Cart = () => {
                 <h1 className={`${styles.heading} text-center`}>{totalPrice}</h1>
               </div>
             </div>
+            <Suspense fallback={<Spinner height="300px" />}>
+              <Checkout />
+            </Suspense>
           </div>
         ))}
     </section>

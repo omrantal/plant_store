@@ -1,4 +1,4 @@
-import { createContext, useReducer, useEffect } from 'react';
+import { createContext, useReducer, useEffect, memo } from 'react';
 
 export const AuthContext = createContext()
 
@@ -30,7 +30,7 @@ export const authReducer = (state, action) => {
   }
 }
 
-export const AuthContextProvider = ({ children }) => {
+export const AuthContextProvider = memo(({ children }) => {
   const [state, dispatch] = useReducer(authReducer, {
     users: [],
     user: null,
@@ -52,4 +52,4 @@ export const AuthContextProvider = ({ children }) => {
       { children }
     </AuthContext.Provider>
   )
-}
+})

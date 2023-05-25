@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, lazy, Suspense } from 'react';
+import React, { useEffect, useRef, lazy } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { BiCart } from 'react-icons/bi';
 import { RiPlantLine } from 'react-icons/ri';
@@ -23,19 +23,7 @@ const Navbar = () => {
   useEffect(() => {
     const height = navbarRef.current.getBoundingClientRect().height;
     document.body.style.paddingTop = `${height}px`
-  }, []);
-
-  const storeLink = (
-    <Link className={`flex items-center px-3 py-1 cursor-pointer ${pathname === '/store' ? 'text-white' : 'text-black hover:text-white duration-300'}`} to="/store">
-      <span className="font-semibold">Store</span>
-    </Link>
-  )
-
-  const cartLink = (
-    <Link className={`flex items-center px-3 py-1 cursor-pointer ${pathname === '/cart' ? 'text-white' : 'text-black hover:text-white duration-300'}`} to="/cart">
-      <BiCart className={`h-8 w-8 ${isPlantAdded && 'animate-spin'}`} />
-    </Link>
-  )
+  }, [])
 
   return (
     <section id="Navbar">
@@ -57,8 +45,15 @@ const Navbar = () => {
           <div className="mr-4 flex">
             {pathname !== '/' && (
               <>
-                {storeLink}
-                {cartLink}
+                <Link className={`flex items-center px-3 py-1 cursor-pointer ${pathname === '/store' ? 'text-white' : 'text-black hover:text-white duration-300'}`} to="/store">
+                  <span className="font-semibold">Store</span>
+                </Link>
+                <Link className={`relative flex items-center mx-3 my-1 cursor-pointer ${pathname === '/cart' ? 'text-white' : 'text-black hover:text-white duration-300'}`} to="/cart">
+                  <BiCart className={`h-8 w-8`} />
+                  {isPlantAdded !== 0 &&
+                    <div className="absolute inline-flex items-center justify-center w-5 h-5 text-[10px] font-semibold text-black bg-red-400 rounded-full -top-2 -right-3">{isPlantAdded}</div>
+                  }
+                </Link>
               </>
             )}
           </div>

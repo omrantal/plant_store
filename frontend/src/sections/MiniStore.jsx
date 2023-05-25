@@ -24,7 +24,7 @@ const MiniStore = () => {
 
   useEffect(() => {
     const getPlantsFromStore = async () => {
-      await axios.get('/api/store')
+      await axios.get('http://localhost:3000/api/store')
         .then((response) => {
           dispatch({ type: 'GET_FROM_STORE', payload: response.data })
           let choosen = []
@@ -40,7 +40,7 @@ const MiniStore = () => {
           setLoading(false)
           handleScroll()
         }).catch((error) => {
-          console.error(error)
+          console.log(error)
         })
     }
 
@@ -93,8 +93,11 @@ const MiniStore = () => {
       <div className="flex-[30%] flex flex-col justify-center m-6 sm:m-9">
         <div className="flex items-center justify-between">
           <h1 className={`${styles.heading} mb-2`}>Shop Now</h1>
-          <Link className={`flex items-center ml-3 px-3 py-1 cursor-pointer text-black hover:text-[#669660] duration-300`} to="/cart">
-            <BiCart className={`h-8 w-8 ${isPlantAdded && 'animate-spin'}`} />
+          <Link className={`relative flex items-center ml-6 mr-3 my-1 cursor-pointer text-black hover:text-[#669660] duration-300`} to="/cart">
+            <BiCart className={`h-8 w-8`} />
+            {isPlantAdded !== 0 &&
+              <div className="absolute inline-flex items-center justify-center w-5 h-5 text-[10px] font-semibold text-black bg-red-400 rounded-full -top-2 -right-3">{isPlantAdded}</div>
+            }
           </Link>
         </div>
         <p className={`${styles.paragraph3}`}>We’ve made it easy for you to bring your home to life with plants</p>
@@ -126,47 +129,3 @@ const MiniStore = () => {
 }
 
 export default MiniStore
-
-
-
-/*const [currentIndex, setCurrentIndex] = useState(0)
-
-  const prevSilde = () => {
-    const isFirstSlide = currentIndex === 0;
-    const newIndex = isFirstSlide ? slides.length - 1 : currentIndex - 1;
-    setCurrentIndex(newIndex)
-  }
-
-  const nextSlide = () => {
-    const isLastSlide = currentIndex === slides.length - 1;
-    const newIndex = isLastSlide ? 0 : currentIndex + 1;
-    setCurrentIndex(newIndex)
-  }
-
-  const goToSlide = (slideIndex) => {
-    setCurrentIndex(slideIndex)
-  }*/
-/*
-<div className="w-[400px] h-[400px] m-auto py-16 px-4 relative group">
-          <img src={slides[currentIndex].url} className="w-full h-full rounded-sm bg-center bg-cover duration-500" />
-          {/* <div style={{ backgroundImage: `url(${slides[currentIndex].url})` }} className="w-full h-full rounded-xl bg-center bg-cover duration-500"></div>
-          }
-          {/* Left Arrow }
-          <div className="hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-5 text-2xl rounded-full p-2 bg-black/20  text-white cursor-pointer">
-            <BsChevronCompactLeft onClick={prevSilde} size={30} />
-          </div>
-          {/* Right Arrow }
-          <div className="hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] right-5 text-2xl rounded-full p-2 bg-black/20  text-white cursor-pointer">
-            <BsChevronCompactRight onClick={nextSlide} size={30} />
-          </div>
-          <div className="flex top-4 justify-center py-2">
-            {slides.map((_, slideIndex) => (
-              <div key={slideIndex} className="text-2xl cursor-pointer mx-1">
-                <RxDotFilled onClick={() => goToSlide(slideIndex)} />
-              </div>
-            ))}
-          </div>
-        </div>*/
-
-
-/*<BsChevronCompactRight className="opacity-50 cursor-pointer hover:opacity-100 hidden group-hover:block" onClick={slideRight} size={40} />*/

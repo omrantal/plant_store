@@ -9,6 +9,7 @@ const connectDB = require('./config/db')
 const storeRoutes = require('./routes/storeRoutes')
 const cartRoutes = require('./routes/cartRoutes')
 const userRoutes = require('./routes/userRoutes')
+const paymentRoute = require('./routes/paymentRoute')
 
 // express app
 const app = express()
@@ -21,6 +22,9 @@ app.use((req, res, next) => {
   console.log(req.path, req.method)
   next()
 })
+
+// Braintree payment gateway
+app.use('/api/checkout', paymentRoute)
 
 // routes
 app.use('/api/cart', cartRoutes)

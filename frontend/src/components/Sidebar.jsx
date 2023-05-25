@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useOnClickOutside } from 'usehooks-ts';
 import { BiCart } from 'react-icons/bi';
@@ -18,18 +18,6 @@ const Sidebar = ({ headlines }) => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
   const ref = useRef(null)
 
-  const storeLink = (
-    <Link className={`flex items-center px-3 my-1 cursor-pointer ${pathname === '/store' ? 'text-white' : 'text-black hover:text-white duration-300'}`} to="/store" onClick={() => setIsOpen(false)}>
-      <span className="font-semibold">Store</span>
-    </Link>
-  )
-
-  const cartLink = (
-    <Link className={`flex items-center px-3 my-1 cursor-pointer ${pathname === '/cart' ? 'text-white' : 'text-black hover:text-white duration-300'}`} to="/cart" onClick={() => setIsOpen(false)}>
-      <BiCart className={`h-8 w-8 ${isPlantAdded && 'animate-spin'}`} />
-    </Link>
-  )
-
   useEffect(() => {
     const handleResize = () => {
       setScreenWidth(window.innerWidth)
@@ -47,12 +35,15 @@ const Sidebar = ({ headlines }) => {
     }
   }, [screenWidth])
 
-  const handleClickOutside = () => {
-    setIsOpen(false)
+  const handleClickOutside = (event) => {
+    if (ref.current && !ref.current.contains(event.target)) {
+      event.stopPropagation()
+      setIsOpen(false)
+    }
   }
 
   useOnClickOutside(ref, handleClickOutside)
-  
+
   return (
     <div ref={ref}>
       {isOpen ? "" : (
@@ -74,8 +65,15 @@ const Sidebar = ({ headlines }) => {
             <div className="mt-4 flex flex-col">
               {pathname !== '/' && (
                 <>
-                  {storeLink}
-                  {cartLink}
+                  <Link className={`flex items-center px-3 my-1 cursor-pointer ${pathname === '/store' ? 'text-white' : 'text-black hover:text-white duration-300'}`} to="/store" onClick={() => setIsOpen(false)}>
+                    <span className="font-semibold">Store</span>
+                  </Link>
+                  <Link className={`relative flex items-center mx-3 my-1 cursor-pointer ${pathname === '/cart' ? 'text-white' : 'text-black hover:text-white duration-300'}`} to="/cart" onClick={() => setIsOpen(false)}>
+                    <BiCart className={`h-8 w-8`} />
+                    {isPlantAdded !== 0 &&
+                      <div className="absolute inline-flex items-center justify-center w-5 h-5 text-[10px] font-semibold text-black bg-red-400 rounded-full -top-1.5 -right-1">{isPlantAdded}</div>
+                    }
+                  </Link>
                 </>
               )}
             </div>

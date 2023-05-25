@@ -7,15 +7,15 @@ import styles from '../style';
 import { TailSpinner } from './Spinner';
 
 import { useAuthContext } from '../hooks/useAuthContext';
-import { useFunctions } from '../hooks/useFunctions';
+import { useCartFunctions } from '../hooks/useCartFunctions';
 
 const PlantCard = ({ plant, group}) => {
   const { user } = useAuthContext()
-  const { addLoading, addPlantToCart } = useFunctions()
+  const { addLoading, addPlantToCart } = useCartFunctions()
   const [tooltip, setTooltip] = useState(false)
  
   return (
-    <div className={`w-[180px] inline-flex flex-col items-center justify-center m-[10px] border-solid border-gray-400 border-[1px] ${group ? 'duration-300 group-hover:blur-sm hover:!blur-none group-hover:scale-[0.9] hover:!scale-100 mix-blend-luminosity' : ''}`}>
+    <div className={`w-[180px] inline-flex flex-col items-center justify-center m-[10px] border-solid border-gray-400 border-[1px] ${group ? 'duration-300 group-hover:blur-[2px] hover:!blur-none group-hover:scale-[0.9] hover:!scale-100 mix-blend-luminosity' : ''}`}>
       <img src={plant.image} alt="plant" className="h-[180px] w-[180px]" />
       <p className="mt-3">{plant.name}</p>
       <div className="flex justify-between items-center mt-3">
