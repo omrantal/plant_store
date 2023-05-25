@@ -1,0 +1,38 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.ReactCollapse--collapse {
+  transition: height 300ms;
+}
+
+:root {
+  --primary-gradient: linear-gradient(90deg, rgba(157, 218, 158, 1) 0%, rgba(14, 208, 22, 1) 100%);
+  --black-gradient: linear-gradient(
+    144.39deg,
+    #ffffff -278.56%,
+    #6d6d6d -78.47%,
+    #11101d 91.61%
+  );
+  --card-shadow: 0px 20px 100px -10px rgba(66, 71, 91, 0.1);
+}
+
+/* #3BFF3E / #0ED016 */
+/* violet: 7F00FF */
+
+* {
+  scroll-behavior: smooth;
+  scroll-padding-top: 56px;
+}
+
+@layer components {
+  .inputClass {
+    @apply w-full h-12 text-white font-bold border-b-[0.4px] border-b-white bg-transparent placeholder-gray-200 placeholder-opacity-50 outline-none focus:outline-2
+  }
+}
+
+.box-shadow {
+  box-shadow: 0px 20px 100px -10px rgba(66, 71, 91, 0.1);
+}
