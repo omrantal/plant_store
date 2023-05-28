@@ -99,11 +99,13 @@ export const plantsReducer = (state, action) => {
         totalPrice: (state.totalPrice - action.payload.price) > 0 ? state.totalPrice - action.payload.price : 0
       }
     case 'OPEN_CART':
+      localStorage.removeItem('plantAdded')
       return {
         ...state,
         isPlantAdded: 0
       }
     case 'EMPTY_CART':
+      localStorage.removeItem('plantAdded')
       return {
         ...state,
         isPlantAdded: 0,
@@ -117,7 +119,6 @@ export const plantsReducer = (state, action) => {
 
 export const PlantsContextProvider = memo(({ children }) => {
   const { user } = useAuthContext()
-  //const location = useLocation()
   const [state, dispatch] = useReducer(plantsReducer, {
     plants: [],
     plantsInCart: [],

@@ -1,0 +1,1 @@
+import{a as r,L as s}from"./index-ff9d9ac4.js";import{s as a}from"./style-c048b2de.js";const m=({content:t,to:e})=>r(s,{to:e,className:"my-3 sm:my-6 w-fit h-fit px-6 py-3 text-center cursor-pointer bg-[#669660] hover:bg-[#99B896] hover:scale-110 duration-500",children:r("p",{className:`${a.paragraph2} text-white`,children:t})});export{m as B};
