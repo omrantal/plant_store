@@ -25,6 +25,7 @@ const MiniStore = () => {
   useEffect(() => {
     const getPlantsFromStore = async () => {
       await axios.get('/api/store')
+      //await axios.get('http://localhost:3000/api/store')
         .then((response) => {
           dispatch({ type: 'GET_FROM_STORE', payload: response.data })
           let choosen = []

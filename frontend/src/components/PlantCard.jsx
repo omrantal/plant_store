@@ -25,7 +25,7 @@ const PlantCard = ({ plant, group }) => {
     if (!user || addLoading) return
     const buttonRect = buttonRef.current.getBoundingClientRect()
     const touch = event.changedTouches[0];
-    if (touch.clientX >= buttonRect.left && touch.clientX <= buttonRect.right && touch.y >= buttonRect.top && touch.clientY <= buttonRect.bottom) {
+    if (touch.clientX >= buttonRect.left && touch.clientX <= buttonRect.right && touch.clientY >= buttonRect.top && touch.clientY <= buttonRect.bottom) {
       addPlantToCart(plant)
     }
     setTooltip(false)

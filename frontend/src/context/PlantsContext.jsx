@@ -1,7 +1,5 @@
 import { createContext, useReducer, useEffect, memo } from 'react';
 
-import axios from 'axios';
-
 import { useAuthContext } from '../hooks/useAuthContext';
 
 export const PlantsContext = createContext()
@@ -51,7 +49,7 @@ export const plantsReducer = (state, action) => {
       }
     // action.payload = plants array
     case 'GET_FROM_CART': 
-      if (action.payload.length === 0) {
+      if (!action.payload) {
         return {
           ...state,
           plantsInCart: [],
@@ -82,7 +80,9 @@ export const plantsReducer = (state, action) => {
       newPlants = state.plantsInCart.map((plant) => {
         if (plant._id === _id) {
           newTotalPrice = change === 'add' ? (newTotalPrice + plant.priceForPiece) : (newTotalPrice - plant.priceForPiece)
-          return action.payload
+          let newNumOfPieces = change === 'add' ? (plant.numOfPieces + 1) : (plant.numOfPieces - 1)
+          let newPrice = change === 'add' ? (plant.price + plant.priceForPiece) : (plant.price - plant.priceForPiece)
+          return { ...plant, numOfPieces: newNumOfPieces, price: newPrice }
         }
         return plant
       })
@@ -128,12 +128,7 @@ export const PlantsContextProvider = memo(({ children }) => {
 
   useEffect(() => {
     const getPlantsFromCart = async () => {
-      await axios.get('/api/cart', { headers: { Authorization: `Bearer ${user.token}` } })
-        .then((response) => {
-          dispatch({ type: 'GET_FROM_CART', payload: response.data })
-        }).catch((error) => {
-          console.log(error)
-        })
+      await dispatch({ type: 'GET_FROM_CART', payload: JSON.parse(localStorage.getItem(`${user.email}_cart`)) })
     }
 
     if (user) {

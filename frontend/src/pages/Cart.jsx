@@ -1,6 +1,5 @@
 import React, { useEffect, useState, lazy, Suspense } from 'react';
 
-import axios from 'axios';
 import styles from '../style';
 
 import { Button } from '../components/Button';
@@ -26,13 +25,9 @@ const Cart = () => {
 
   useEffect(() => {
     const getPlantsFromCart = async () => {
-      await axios.get('/api/cart', { headers: { Authorization: `Bearer ${user.token}` } })
-        .then((response) => {
-          dispatch({ type: 'GET_FROM_CART', payload: response.data })
-          setGetLoading(false)
-        }).catch((error) => {
-          console.log(error)
-        })
+      await dispatch({ type: 'GET_FROM_CART', payload: JSON.parse(localStorage.getItem(`${user.email}_cart`)) })
+      
+      setGetLoading(false)
     }
 
     if (user) {

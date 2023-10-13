@@ -50,6 +50,7 @@ const Checkout = () => {
   const getToken = async () => {
     try {
       const response = await axios.get('/api/checkout/generate/token')
+      //const response = await axios.get('http://localhost:3000/api/checkout/generate/token')
       setClientToken(response.data.clientToken)
     } catch (err) {
       setError(err)
@@ -83,6 +84,7 @@ const Checkout = () => {
   const makePayment = async (paymentData) => {
     try {
       const response = await axios.post('/api/checkout/process/payment', { plantsInCart, paymentData })
+      //const response = await axios.post('http://localhost:3000/api/checkout/process/payment', { plantsInCart, paymentData })
       setSuccess(response.data.success)
     } catch (err) {
       console.log(err)
@@ -91,12 +93,9 @@ const Checkout = () => {
 
   const emptyCart = () => {
     if (totalPrice !== 0) {
-      axios.delete('/api/cart', { headers: { Authorization: `Bearer ${user.token}` } })
-        .then((response) => {
-          dispatch({ type: 'EMPTY_CART' })
-        }).catch((err) => {
-          console.log(err)
-        })
+      localStorage.removeItem(`${user.email}_cart`)
+      
+      dispatch({ type: 'EMPTY_CART' })
     }
   }
 

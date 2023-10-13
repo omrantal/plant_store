@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { AiOutlineDownCircle, AiOutlineUpCircle } from 'react-icons/ai'
 import { BiTrash } from 'react-icons/bi';
 
-import axios from 'axios';
 import styles from '../style';
 
 import { TailSpinner } from '../components/Spinner';
@@ -18,17 +17,24 @@ const CartCard = ({ plant }) => {
 
   const [loading, setLoading] = useState(false)
 
-  const { _id, numOfPieces, price } = plant
+  const { _id, numOfPieces } = plant
 
-  const deletePlantFromCart = async ({ id, price }) => {
+  const deletePlantFromCart = async ({ id, name, price }) => {
     setLoading(true)
 
-    await axios.delete(`/api/cart/${id}`, { headers: { Authorization: `Bearer ${user.token}` } })
-      .then((response) => {
-        dispatch({ type: 'DELETE_FROM_CART', payload: { id, price } })
-      }).catch((error) => {
-        console.log(error)
-      })
+    const cartPlants = JSON.parse(localStorage.getItem(`${user.email}_cart`)) || []
+    const index = cartPlants.findIndex((plantInCart) => plantInCart.name === name)
+    if (index !== -1) {
+      cartPlants.splice(index, 1)
+    }
+
+    dispatch({ type: 'DELETE_FROM_CART', payload: { id, price } })
+
+    if (cartPlants.length === 0) {
+      localStorage.removeItem(`${user.email}_cart`) 
+    } else {
+      localStorage.setItem(`${user.email}_cart`, JSON.stringify(cartPlants))
+    }
 
     setLoading(false)
   }
@@ -49,7 +55,7 @@ const CartCard = ({ plant }) => {
         <div className="flex mt-3 justify-center items-center">
           <p className={`${styles.paragraph2} mr-3`}>{plant.price}</p>
           <div className="hover:bg-gray-300 duration-300 ml-3 hover:rounded-full p-1">
-            <BiTrash className="h-[24px] w-[24px] shrink-0 cursor-pointer" onClick={() => deletePlantFromCart({ id: _id, price })} />
+            <BiTrash className="h-[24px] w-[24px] shrink-0 cursor-pointer" onClick={() => deletePlantFromCart({ id: _id, name: plant.name, price: plant.price })} />
           </div>
         </div>
       </div>

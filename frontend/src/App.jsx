@@ -31,7 +31,7 @@ const App = () => {
           <Route path='/store' element={<><Store /> <Footer /></>} />
           <Route path='/store/:id' element={<><Plant /> <Footer /></>} />
           <Route path='/cart' element={<><Cart /> <Footer /></>} />
-          <Route path='/admin' element={<Admin />} />
+          <Route path='/admin' element={user && user.role === 'ADMIN' ? <Admin /> : <Navigate to='/' />} />
         </Routes>
       </Suspense>
     </div>
