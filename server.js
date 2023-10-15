@@ -32,7 +32,7 @@ app.use('/api/store', storeRoutes)
 app.use('/api/user', userRoutes)
 
 // serving the frontend
-/*app.use(express.static(path.join(__dirname, "./frontend/dist")));
+app.use(express.static(path.join(__dirname, "./frontend/dist")));
 app.get("*", function (_, res) {
   res.sendFile(
     path.join(__dirname, "./frontend/dist/index.html"),
@@ -40,7 +40,7 @@ app.get("*", function (_, res) {
       res.status(500).send(err);
     }
   );
-});*/
+});
 
 // connect to db
 connectDB().then(() => {
