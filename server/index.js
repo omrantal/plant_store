@@ -4,12 +4,12 @@ const express = require('express')
 const cors = require('cors')
 const path = require('path');
 const port = process.env.PORT || 5000
-const connectDB = require('../config/db')
+const connectDB = require('./config/db')
 
-const storeRoutes = require('../routes/storeRoutes')
-//const cartRoutes = require('../routes/cartRoutes')
-const userRoutes = require('../routes/userRoutes')
-const paymentRoute = require('../routes/paymentRoute')
+const storeRoutes = require('./routes/storeRoutes')
+//const cartRoutes = require('./routes/cartRoutes')
+const userRoutes = require('./routes/userRoutes')
+const paymentRoute = require('./routes/paymentRoute')
 
 // express app
 const app = express()
@@ -17,7 +17,7 @@ const app = express()
 // middleware
 app.use(cors())
 app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+//app.use(express.urlencoded({ extended: true }))
 app.use((req, res, next) => {
   console.log(req.path, req.method)
   next()

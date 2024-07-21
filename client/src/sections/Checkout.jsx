@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { SERVER_URL } from '../../config';
 import dropin from 'braintree-web-drop-in';
 
 import axios from 'axios';
@@ -50,7 +51,7 @@ const Checkout = () => {
   const getToken = async () => {
     try {
       //const response = await axios.get('/api/checkout/generate/token')
-      const response = await axios.get('http://localhost:3000/api/checkout/generate/token')
+      const response = await axios.get(`${SERVER_URL}/api/checkout/generate/token`)
       setClientToken(response.data.clientToken)
     } catch (err) {
       setError(err)
@@ -84,7 +85,7 @@ const Checkout = () => {
   const makePayment = async (paymentData) => {
     try {
       //const response = await axios.post('/api/checkout/process/payment', { plantsInCart, paymentData })
-      const response = await axios.post('http://localhost:3000/api/checkout/process/payment', { plantsInCart, paymentData })
+      const response = await axios.post(`${SERVER_URL}/api/checkout/process/payment`, { plantsInCart, paymentData })
       setSuccess(response.data.success)
     } catch (err) {
       console.log(err)

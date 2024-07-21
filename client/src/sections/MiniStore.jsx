@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, lazy, Suspense } from 'react';
+import { SERVER_URL } from '../../config';
 import { Link } from 'react-router-dom';
 import { BiCart } from 'react-icons/bi';
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
@@ -25,7 +26,7 @@ const MiniStore = () => {
   useEffect(() => {
     const getPlantsFromStore = async () => {
       //await axios.get('/api/store')
-      await axios.get('http://localhost:3000/api/store')
+      await axios.get(`${SERVER_URL}/api/store`)
         .then((response) => {
           dispatch({ type: 'GET_FROM_STORE', payload: response.data })
           let choosen = []

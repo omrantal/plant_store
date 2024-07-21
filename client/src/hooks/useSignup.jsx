@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SERVER_URL } from "../../config";
 
 import axios from "axios";
 
@@ -15,7 +16,7 @@ export const useSignup = () => {
 
     try {
       //const response = await axios.post('/api/user/signup', { username, email, password })
-      const response = await axios.post('http://localhost:3000/api/user/signup', { username, email, password })
+      const response = await axios.post(`${SERVER_URL}/api/user/signup`, { username, email, password })
       
       // save the user to local storage
       localStorage.setItem('user', JSON.stringify(response.data))
