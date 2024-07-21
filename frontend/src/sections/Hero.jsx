@@ -10,7 +10,7 @@ const Hero = () => {
     <section id="Home" className={`flex flex-col h-full bg-hero-pattern bg-cover bg-center ${styles.padding}`}>
       <div className="w-[60%] flex flex-row items-center">
         <CiDiscount1 color="#669660" className="w-[34px] h-[34px] shrink-0" />
-        <p className={`${styles.paragraph2} text-[#669660] ml-2`}>20% Discount For One Month Account</p>
+        <p className={`${styles.paragraph2} text-[#669660] ml-2`}>25% Discount For One Month Account</p>
       </div>
 
       <div className="w-[60%] flex flex-col mt-3 sm:mt-6">
