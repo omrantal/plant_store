@@ -27,6 +27,8 @@ app.use((req, res, next) => {
 app.use('/api/checkout', paymentRoute)
 
 // routes
+app.get("/", (req, res) => res.send("Express on Vercel"));
+
 //app.use('/api/cart', cartRoutes)
 app.use('/api/store', storeRoutes)
 app.use('/api/user', userRoutes)
