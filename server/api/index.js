@@ -4,12 +4,12 @@ const express = require('express')
 const cors = require('cors')
 const path = require('path');
 const port = process.env.PORT || 5000
-const connectDB = require('./config/db')
+const connectDB = require('../config/db')
 
-const storeRoutes = require('./routes/storeRoutes')
-//const cartRoutes = require('./routes/cartRoutes')
-const userRoutes = require('./routes/userRoutes')
-const paymentRoute = require('./routes/paymentRoute')
+const storeRoutes = require('../routes/storeRoutes')
+//const cartRoutes = require('../routes/cartRoutes')
+const userRoutes = require('../routes/userRoutes')
+const paymentRoute = require('../routes/paymentRoute')
 
 // express app
 const app = express()
