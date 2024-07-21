@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
-import { SERVER_URL } from '../../config';
 import { AiOutlineSearch } from 'react-icons/ai';
 
 import axios from 'axios';
@@ -27,7 +26,7 @@ const Store = () => {
   useEffect(() => {
     const getPlantsFromStore = async () => {
       //await axios.get('/api/store')
-      await axios.get(`${SERVER_URL}/api/store`)
+      await axios.get(`https://plant-store-seven.vercel.app/api/store`)
         .then((response) => {
           dispatch({ type: 'GET_FROM_STORE', payload: response.data })
           setLoading(false)

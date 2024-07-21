@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import { SERVER_URL } from '../../config';
 import axios from 'axios';
 
 import { useAuthContext } from './useAuthContext';
@@ -17,7 +16,7 @@ const useAdminFunctions = () => {
 
   const getPlantsFromStore = async () => {
     //await axios.get('/api/store')
-    await axios.get(`${SERVER_URL}/api/store`)
+    await axios.get(`https://plant-store-seven.vercel.app/api/store`)
       .then((response) => {
         dispatch({ type: 'GET_FROM_STORE', payload: response.data })
       }).catch((error) => {
@@ -29,7 +28,7 @@ const useAdminFunctions = () => {
 
   const getUsers = async (token) => {
     //await axios.get('/api/user', { headers: { Authorization: `Bearer ${token}` } })
-    await axios.get(`${SERVER_URL}/api/user`, { headers: { Authorization: `Bearer ${token}` } })
+    await axios.get(`https://plant-store-seven.vercel.app/api/user`, { headers: { Authorization: `Bearer ${token}` } })
       .then((response) => {
         dispatchUsers({ type: 'GET_USERS', payload: response.data })
       }).catch((error) => {
@@ -45,7 +44,7 @@ const useAdminFunctions = () => {
 
     const newPlant = { image, name, price, type, title, desc, watering, light, about }
     //await axios.post('/api/store', newPlant, { headers: { Authorization: `Bearer ${user.token}` } })
-    await axios.post(`${SERVER_URL}/api/store`, newPlant, { headers: { Authorization: `Bearer ${user.token}` } })
+    await axios.post(`https://plant-store-seven.vercel.app/api/store`, newPlant, { headers: { Authorization: `Bearer ${user.token}` } })
       .then((response) => {
         dispatch({ type: 'ADD_TO_STORE', payload: response.data })
         import ('../components/Toast').then((module) => {
@@ -66,7 +65,7 @@ const useAdminFunctions = () => {
 
     const updatedPlant = { image, name, price, type, title, desc, watering, light, about }
     //await axios.put(`/api/store/${id}`, updatedPlant, { headers: { Authorization: `Bearer ${user.token}` } })
-    await axios.put(`${SERVER_URL}/api/store/${id}`, updatedPlant, { headers: { Authorization: `Bearer ${user.token}` } })
+    await axios.put(`https://plant-store-seven.vercel.app/api/store/${id}`, updatedPlant, { headers: { Authorization: `Bearer ${user.token}` } })
       .then((response) => {
         dispatch({ type: 'UPDATE_IN_STORE', payload: { _id: id, ...updatedPlant } })
         import ('../components/Toast').then((module) => {
@@ -85,7 +84,7 @@ const useAdminFunctions = () => {
     setPlantsLoading(true)
 
     //await axios.delete(`/api/store/${_id}`, { headers: { Authorization: `Bearer ${user.token}` } })
-    await axios.delete(`${SERVER_URL}/api/store/${_id}`, { headers: { Authorization: `Bearer ${user.token}` } })
+    await axios.delete(`https://plant-store-seven.vercel.app/api/store/${_id}`, { headers: { Authorization: `Bearer ${user.token}` } })
       .then((response) => {
         dispatch({ type: 'DELETE_FROM_STORE', payload: { _id } })
         import ('../components/Toast').then((module) => {
@@ -104,7 +103,7 @@ const useAdminFunctions = () => {
     setUsersLoading(true)
 
     //await axios.delete(`/api/user/${_id}`, { headers: { Authorization: `Bearer ${user.token}` } })
-    await axios.delete(`${SERVER_URL}/api/user/${_id}`, { headers: { Authorization: `Bearer ${user.token}` } })
+    await axios.delete(`https://plant-store-seven.vercel.app/api/user/${_id}`, { headers: { Authorization: `Bearer ${user.token}` } })
       .then((response) => {
         dispatchUsers({ type: 'DELETE_USER', payload: { _id } })
         import ('../components/Toast').then((module) => {

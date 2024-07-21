@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { SERVER_URL } from '../../config';
 import { useParams } from 'react-router-dom';
 import { GiPlantWatering } from 'react-icons/gi';
 import { BsSun } from 'react-icons/bs';
@@ -26,7 +25,7 @@ const Plant = () => {
   useEffect(() => {
     const getSinglePlant = async () => {
       //await axios.get(`/api/store/${id}`)
-      await axios.get(`${SERVER_URL}/api/store/${id}`)
+      await axios.get(`https://plant-store-seven.vercel.app/api/store/${id}`)
         .then((response) => {
           setChoosenPlant(response.data)
           setLoading(false)
